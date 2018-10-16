@@ -56,3 +56,4 @@ $RECYCLE.BIN/
 *.lnk
 
 /venv/
+node_modules/
