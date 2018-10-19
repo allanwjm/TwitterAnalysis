@@ -1,0 +1,56 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+.wh-100 {
+  width: 100%;
+  height: 100%;
+}
+
+.google-maps-style-card {
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 4px -1px;
+  border-radius: 2px;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+#panel-trigger {
+  @extend .google-maps-style-card;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 0;
+}
+
+#city-selector {
+  @extend .google-maps-style-card;
+  position: absolute;
+  left: 60px;
+  top: 10px;
+  max-width: calc(100vw - 120px);
+  button {
+    height: 40px;
+    border-radius: 2px;
+  }
+  button.trigger {
+    padding: 0;
+    min-width: 40px;
+  }
+}
+
+#panel {
+  @extend .google-maps-style-card;
+  $width: 350px;
+  position: absolute;
+  top: 60px;
+  bottom: 10px;
+  width: $width;
+  max-width: calc(100vw - 20px);
+  left: -$width;
+  transition: left ease 0.3s;
+  &.open {
+    left: 10px;
+  }
+}
