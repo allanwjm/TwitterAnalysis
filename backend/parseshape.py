@@ -59,6 +59,7 @@ for info, shape in zip(csv_reader, shapes):
 
     outputs[city][sa2_code] = {
         'sa2_name': sa2_name,
+        'area': info['AREA_ALBERS_SQKM'],
         'top': top, 'bottom': bottom,
         'left': left, 'right': right,
         'polygons': polygons}
@@ -105,6 +106,7 @@ for info, shape in zip(csv_reader, shapes):
             point_set.add(p)
 
     outputs[city][sa1_code] = {
+        'area': info['AREA_ALBERS_SQKM'],
         'top': top, 'bottom': bottom,
         'left': left, 'right': right,
         'polygons': polygons}

@@ -18,7 +18,6 @@ def get_sentiment(city, years, weekdays):
             `weekday` IN (%s)
         GROUP BY sa2_code;
     """ % (table, ', '.join(['%s'] * len(weekdays)))
-    print(sql, weekdays)
     c.execute(sql, weekdays)
     result = c.fetchall()
 
