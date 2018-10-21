@@ -30,5 +30,5 @@ def mysql_connect():
         user='root',
         passwd='toor',
         db='twitter',
-        port=3309,
+        port=3306,
         charset='utf8mb4')
