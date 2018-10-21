@@ -5,6 +5,7 @@ from flask import Response
 from flask import request
 from flask_compress import Compress
 from flask_cors import CORS
+import sys
 
 from sentiment import get_sentiment
 
@@ -36,5 +37,11 @@ def sentiment():
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run()
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+        debug = False
+    else:
+        port = 5000
+        debug = True
+
+    app.run(port=port, debug=debug)

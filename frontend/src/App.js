@@ -36,11 +36,11 @@ import React, {Component} from 'react';
 import {GoogleMap, Polygon, withGoogleMap, withScriptjs} from 'react-google-maps';
 import {compose, withProps} from 'recompose';
 import Snackbar from '@material-ui/core/Snackbar';
-import './style.css';
 import PropTypes from 'prop-types';
 import 'typeface-roboto';
+import './style.css';
 
-const BACKEND_HOST = 'http://115.146.92.26:5000';
+const BACKEND_HOST = 'http://115.146.92.26:15000';
 
 const theme = createMuiTheme({
   palette: {
