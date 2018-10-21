@@ -1,15 +1,16 @@
 import json
+import sys
 
 from flask import Flask
 from flask import Response
+from flask import redirect
 from flask import request
 from flask_compress import Compress
 from flask_cors import CORS
-import sys
 
 from sentiment import get_sentiment
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='build')
 Compress(app)
 CORS(app)
 
@@ -23,9 +24,8 @@ def as_json(data):
 
 
 @app.route("/")
-def hello():
-    area = get_arg('area', 'Melbourne')
-    return as_json({'area': area})
+def index():
+    return redirect('index.html')
 
 
 @app.route('/sentiment')

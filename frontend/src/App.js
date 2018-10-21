@@ -40,7 +40,7 @@ import PropTypes from 'prop-types';
 import 'typeface-roboto';
 import './style.css';
 
-const BACKEND_HOST = 'http://115.146.92.26:15000';
+const BACKEND_HOST = 'http://115.146.92.26';
 
 const theme = createMuiTheme({
   palette: {
