@@ -6,7 +6,7 @@ html, body {
   width: 100%;
   height: 100%; }
 
-.google-maps-style-card, #panel-trigger, #city-selector, #panel {
+.google-maps-style-card, #panel-trigger, #city-selector, #info-panel, #panel {
   background: white;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 4px -1px;
   border-radius: 2px;
@@ -30,6 +30,17 @@ html, body {
   #city-selector button.trigger {
     padding: 0;
     min-width: 40px; }
+
+#info-panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  min-width: 40px;
+  min-height: 40px; }
+  #info-panel.open {
+    opacity: .85; }
+  #info-panel.open:hover {
+    opacity: 1; }
 
 #panel {
   position: absolute;

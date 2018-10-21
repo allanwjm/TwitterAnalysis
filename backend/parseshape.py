@@ -40,13 +40,31 @@ for info, shape in zip(csv_reader, shapes):
     if not points:
         continue
     else:
-        lng = sum(map(operator.itemgetter(0), points)) / len(points)
-        lat = sum(map(operator.itemgetter(1), points)) / len(points)
+        top = max(map(operator.itemgetter(1), points))
+        bottom = min(map(operator.itemgetter(1), points))
+        left = min(map(operator.itemgetter(0), points))
+        right = max(map(operator.itemgetter(0), points))
 
-    outputs[city][sa2_code] = {'sa2_name': sa2_name, 'lng': lng, 'lat': lat, 'points': points}
+    polygons = [[]]
+    polygon = polygons[0]
+    point_set = set()
+    for p in points:
+        polygon.append({'lng': p[0], 'lat': p[1]})
+        if p in point_set:
+            polygons.append([])
+            polygon = polygons[-1]
+            point_set = set()
+        else:
+            point_set.add(p)
+
+    outputs[city][sa2_code] = {
+        'sa2_name': sa2_name,
+        'top': top, 'bottom': bottom,
+        'left': left, 'right': right,
+        'polygons': polygons}
 
 for city, data in outputs.items():
-    pickle.dump(data, gzip.open(os.path.join(base_path, '%s-sa2.pkl.gz' % city), 'wb'))
+    pickle.dump(data, gzip.open(os.path.join(base_path, 'shapefile', '%s-sa2.pkl.gz' % city), 'wb'))
 
 # SA1
 shpfile = shapefile.Reader(os.path.join(base_path, 'shapefile', 'SA1_2016_AUST'))
@@ -69,10 +87,27 @@ for info, shape in zip(csv_reader, shapes):
     if not points:
         continue
     else:
-        lng = sum(map(operator.itemgetter(0), points)) / len(points)
-        lat = sum(map(operator.itemgetter(1), points)) / len(points)
+        top = max(map(operator.itemgetter(1), points))
+        bottom = min(map(operator.itemgetter(1), points))
+        left = min(map(operator.itemgetter(0), points))
+        right = max(map(operator.itemgetter(0), points))
 
-    outputs[city][sa1_code] = {'lng': lng, 'lat': lat, 'points': points}
+    polygons = [[]]
+    polygon = polygons[0]
+    point_set = set()
+    for p in points:
+        polygon.append({'lng': p[0], 'lat': p[1]})
+        if p in point_set:
+            polygons.append([])
+            polygon = polygons[-1]
+            point_set = set()
+        else:
+            point_set.add(p)
+
+    outputs[city][sa1_code] = {
+        'top': top, 'bottom': bottom,
+        'left': left, 'right': right,
+        'polygons': polygons}
 
 for city, data in outputs.items():
-    pickle.dump(data, gzip.open(os.path.join(base_path, '%s-sa1.pkl.gz' % city), 'wb'))
+    pickle.dump(data, gzip.open(os.path.join(base_path, 'shapefile', '%s-sa1.pkl.gz' % city), 'wb'))

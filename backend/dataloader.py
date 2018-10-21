@@ -1,41 +1,32 @@
+import gzip
 import os
 import pickle
 
-import pymysql
+import MySQLdb
 
 base_path = os.path.split(os.path.realpath(__file__))[0]
 
-_sa1_data = None
-_sa2_data = None
+_sa1_data = {}
+_sa2_data = {}
 
 
-def sa1_data():
-    global _sa1_data
-    if _sa1_data is None:
-        _sa1_data = pickle.load(open(os.path.join(base_path, 'cache', 'sa1.pkl'), 'rb'))
-    return _sa1_data
+def sa1_shapes(city):
+    if city not in _sa1_data:
+        filepath = os.path.join(base_path, 'shapefile', '%s-sa1.pkl.gz' % city)
+        _sa1_data[city] = pickle.load(gzip.open(filepath, 'rb'))
+    return _sa1_data[city]
 
 
-def sa2_data():
-    global _sa2_data
-    if _sa2_data is None:
-        _sa2_data = pickle.load(open(os.path.join(base_path, 'cache', 'sa2.pkl'), 'rb'))
-    return _sa2_data
+def sa2_shapes(city):
+    if city not in _sa2_data:
+        filepath = os.path.join(base_path, 'shapefile', '%s-sa2.pkl.gz' % city)
+        _sa2_data[city] = pickle.load(gzip.open(filepath, 'rb'))
+    return _sa2_data[city]
 
 
 def mysql_connect():
-    return pymysql.connect(
-        host='localhost',
-        user='root',
-        passwd='toor',
-        db='twitter',
-        port=3309,
-        charset='utf8mb4')
-
-
-def mysql_connect_sscursor():
-    return pymysql.connect(
-        host='localhost',
+    return MySQLdb.connect(
+        host='127.0.0.1',
         user='root',
         passwd='toor',
         db='twitter',
