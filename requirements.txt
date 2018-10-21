@@ -1,5 +1,6 @@
 flask
 flask-cors
-flask-gzip
+flask-compress
 pyshp
 mysqlclient
+pymysql
