@@ -57,3 +57,6 @@ $RECYCLE.BIN/
 
 /venv/
 node_modules/
+
+SA1_2016_AUST.*
+SA2_2016_AUST.*
