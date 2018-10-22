@@ -3,16 +3,15 @@ import sys
 
 from flask import Flask
 from flask import Response
+from flask import make_response
 from flask import redirect
 from flask import request
-from flask import make_response
 from flask_compress import Compress
 from flask_cors import CORS
-from flask import redirect, url_for
 
+from ldaSimple import get_topic
 from sentiment import get_sentiment
 from sentiment import get_sentiment_csv
-from ldaSimple import get_topic
 
 app = Flask(__name__, static_url_path='', static_folder='build')
 Compress(app)
@@ -53,10 +52,10 @@ def sentiment_csv():
     years = list(map(int, get_arg('years', '2014,2015,2016,2017,2018').split(',')))
     months = list(map(int, get_arg('months', '1,2,3,4,5,6,7,8,9,10,11,12').split(',')))
     weekdays = list(map(int, get_arg('weekdays', '0,1,2,3,4,5,6').split(',')))
-    return as_csv(get_sentiment_csv(city, years, months, weekdays), 'sentiment.csv')
+    return as_csv(get_sentiment_csv(city, years, months, weekdays), '%s-sentiment.csv' % city)
 
 
-@app.route('/topic', methods = ['POST', 'GET'])
+@app.route('/topic', methods=['POST', 'GET'])
 def topic():
     if request.method == 'POST':
         weekday = request.form['weekday']

@@ -5,3 +5,6 @@ pyshp
 DBUtils
 mysqlclient
 pymysql
+nltk
+sklearn
+pyLDAvis

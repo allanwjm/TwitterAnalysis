@@ -440,9 +440,15 @@ class App extends Component {
       // Send request
       let paras = new URLSearchParams();
       paras.append('city', cityName);
-      paras.append('years', options.filterYears);
-      paras.append('months', options.filterMonths);
-      paras.append('weekdays', options.filterWeekdays);
+      if (options.filterYears.length < years.length) {
+        paras.append('years', options.filterYears);
+      }
+      if (options.filterMonths.length < months.length) {
+        paras.append('months', options.filterMonths);
+      }
+      if (options.filterWeekdays.length < weekdays.length) {
+        paras.append('weekdays', options.filterWeekdays);
+      }
       fetch(BACKEND_HOST + '/sentiment?' + paras).then(res => res.json()).then(res => {
         dataset.data = res;
         dataset.loaded = true;
