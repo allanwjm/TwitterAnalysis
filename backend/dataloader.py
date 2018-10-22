@@ -3,11 +3,13 @@ import os
 import pickle
 
 import MySQLdb
+from DBUtils.PooledDB import PooledDB
 
 base_path = os.path.split(os.path.realpath(__file__))[0]
 
 _sa1_data = {}
 _sa2_data = {}
+_pool = None
 
 
 def sa1_shapes(city):
@@ -25,10 +27,14 @@ def sa2_shapes(city):
 
 
 def mysql_connect():
-    return MySQLdb.connect(
-        host='127.0.0.1',
-        user='root',
-        passwd='toor',
-        db='twitter',
-        port=3306,
-        charset='utf8mb4')
+    global _pool
+    if _pool is None:
+        _pool = PooledDB(
+            MySQLdb, 5,
+            host='127.0.0.1',
+            user='root',
+            passwd='toor',
+            db='twitter',
+            port=3306,
+            charset='utf8mb4')
+    return _pool.connection()

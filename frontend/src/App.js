@@ -9,7 +9,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Divider from '@material-ui/core/Divider';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
@@ -40,8 +39,10 @@ import {GoogleMap, Polygon, withGoogleMap, withScriptjs} from 'react-google-maps
 import {compose, withProps} from 'recompose';
 import 'typeface-roboto';
 import './style.css';
+import mapstyle from './mapstyle';
 
 const BACKEND_HOST = 'http://115.146.92.26';
+// const BACKEND_HOST = 'http://127.0.0.1:5000';
 
 const theme = createMuiTheme({
   palette: {
@@ -54,11 +55,11 @@ const theme = createMuiTheme({
 
 function debounce(fn, delay = 1000) {
   let timer = null;
-  return function() {
+  return function () {
     let context = this;
     let args = arguments;
     clearTimeout(timer);
-    timer = setTimeout(function() {
+    timer = setTimeout(function () {
       fn.apply(context, args);
     }, delay);
   };
@@ -93,15 +94,31 @@ function redGreedColor(value) {
 
 const years = [2014, 2015, 2016, 2017, 2018];
 
-const weekdays = [
-  {key: 0, name: 'Sunday', short: 'Sun'},
-  {key: 1, name: 'Monday', short: 'Mon'},
-  {key: 2, name: 'Tuesday', short: 'Tue'},
-  {key: 3, name: 'Wednesday', short: 'Wed'},
-  {key: 4, name: 'Thursday', short: 'Thu'},
-  {key: 5, name: 'Friday', short: 'Fri'},
-  {key: 6, name: 'Saturday', short: 'Sat'},
+const months = [
+  {key: 1, name: 'January', short: 'Jan'},
+  {key: 2, name: 'February', short: 'Feb'},
+  {key: 3, name: 'March', short: 'Mar'},
+  {key: 4, name: 'April', short: 'Apr'},
+  {key: 5, name: 'May', short: 'May'},
+  {key: 6, name: 'June', short: 'Jun'},
+  {key: 7, name: 'July', short: 'Jul'},
+  {key: 8, name: 'August', short: 'Aug'},
+  {key: 9, name: 'September', short: 'Sept'},
+  {key: 10, name: 'October', short: 'Oct'},
+  {key: 11, name: 'November', short: 'Nov'},
+  {key: 12, name: 'December', short: 'Dec'},
 ];
+
+const weekdays = [
+  {key: 0, name: 'Monday', short: 'Mon'},
+  {key: 1, name: 'Tuesday', short: 'Tue'},
+  {key: 2, name: 'Wednesday', short: 'Wed'},
+  {key: 3, name: 'Thursday', short: 'Thu'},
+  {key: 4, name: 'Friday', short: 'Fri'},
+  {key: 5, name: 'Saturday', short: 'Sat'},
+  {key: 6, name: 'Sunday', short: 'Sun'},
+];
+
 
 const cities = [
   new City('melbourne', 144.962, -37.816, '#3f51b5'),
@@ -130,17 +147,14 @@ function Dataset(city, name, display) {
   this.failed = false;
   this.timestamp = new Date();
   this.data = null;
+  this.infoTable = [];
+  this.csvLink = null;
 }
 
 class MapComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      top: null,
-      bottom: null,
-      left: null,
-      right: null,
-    };
+    this.state = {top: null, bottom: null, left: null, right: null};
     this.map = React.createRef();
   }
 
@@ -155,10 +169,11 @@ class MapComponent extends Component {
     });
   };
 
-  handleHover = area => {
+  polygonMouseOver = area => {
     this.props.updateInfo(area.sa2Name, [
       {key: 'Twitter count', value: area.count},
       {key: 'Sentiment score', value: Number(area.score).toFixed(3)},
+      {key: 'Step', value: area.step},
     ]);
   };
 
@@ -169,24 +184,31 @@ class MapComponent extends Component {
       if (dataset.display === 'polygons') {
         let scoreMax = dataset.data.scoreMax;
         let scoreMin = dataset.data.scoreMin;
+        let scoreAvg = dataset.data.scoreAvg;
         content = dataset.data.areas.map(area => {
           if (this.state.top == null || (
+            // Check if this area is inside the screen
             this.state.left < area.right && area.left < this.state.right &&
             this.state.bottom < area.top && area.bottom < this.state.top)) {
             let color = `#666666`;
-            if (area.count > 0) {
-              let score = area.score;
-              let ratio = (score - scoreMin) / (scoreMax - scoreMin);
-              ratio = scaleRatio(ratio, 2);
-              color = redGreedColor(ratio);
+            if (area.count > 10) {
+              // let score = area.score;
+              // let ratio = score > scoreAvg ?
+              //   ((score - scoreAvg) / (scoreMax - scoreAvg)) / 2 + 0.5 :
+              //   ((scoreAvg - score) / (scoreAvg - scoreMin)) / 2;
+              // color = redGreedColor(ratio);
+              color = redGreedColor(area.step / 10);
             }
             let polygonOptions = {
-              strokeWeight: 1, strokeOpacity: 0.6, strokeColor: color,
+              strokeWeight: 1, strokeOpacity: 0.75, strokeColor: color,
               fillOpacity: 0.4, fillColor: color,
             };
             return area.polygons.map((polygon, i) =>
               <Polygon key={`${area.sa2Code}-${i}`} paths={polygon}
-                       onMouseOver={() => this.handleHover(area)} options={polygonOptions}/>);
+                       onMouseOver={() => this.polygonMouseOver(area)}
+                       options={polygonOptions}>
+              </Polygon>
+            );
           } else {
             return '';
           }
@@ -204,6 +226,7 @@ class MapComponent extends Component {
                  onBoundsChanged={debounce(this.boundsChanged, 250)}
                  defaultCenter={{lat: this.props.city.lat, lng: this.props.city.lng - 0.02}}
                  defaultOptions={{
+                   styles: mapstyle,
                    fullscreenControl: false,
                    mapTypeControl: false,
                    streetViewControl: false,
@@ -229,6 +252,7 @@ class DatasetDialog extends Component {
       datasetType: 'sentiment',
       cityName: cityName,
       filterYears: [].concat(years),
+      filterMonths: months.map(month => month.key),
       filterWeekdays: weekdays.map(day => day.key),
     };
   };
@@ -247,6 +271,7 @@ class DatasetDialog extends Component {
       datasetType: this.state.datasetType,
       cityName: this.state.cityName.toLowerCase(),
       filterYears: this.state.filterYears,
+      filterMonths: this.state.filterMonths,
       filterWeekdays: this.state.filterWeekdays,
     });
     this.props.onClose();
@@ -259,21 +284,11 @@ class DatasetDialog extends Component {
     };
     return (
       <Dialog open={this.props.open} onClose={this.props.onClose}>
-        <DialogTitle>Open Dataset</DialogTitle>
         <DialogContent>
           <Grid container spacing={24}>
             <Grid item md={6}>
-              <FormControl fullWidth style={style}>
-                <InputLabel>Dataset type</InputLabel>
-                <Select value={this.state.datasetType} onChange={e => this.setState({datasetType: e.target.value})}>
-                  <MenuItem value="sentiment">
-                    Sentiment Analysis
-                  </MenuItem>
-                  <MenuItem value="topic">
-                    Topic Modeling
-                  </MenuItem>
-                </Select>
-              </FormControl>
+              <Typography variant="h6" gutterBottom>Open dataset</Typography>
+              <Divider style={{marginBottom: '12px'}}/>
               <FormControl fullWidth style={style}>
                 <InputLabel>City</InputLabel>
                 <Select value={this.state.cityName} renderValue={() => capitalize(this.state.cityName)}
@@ -283,8 +298,24 @@ class DatasetDialog extends Component {
                   )}
                 </Select>
               </FormControl>
+              <FormControl fullWidth style={style}>
+                <InputLabel>Dataset type</InputLabel>
+                <Select value={this.state.datasetType} onChange={e => this.setState({datasetType: e.target.value})}>
+                  <MenuItem value="sentiment">
+                    Sentiment Analysis
+                  </MenuItem>
+                  <MenuItem value="topic">
+                    Topic Modeling
+                  </MenuItem>
+                  <MenuItem value="distribution">
+                    Twitter Distribution
+                  </MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item md={6}>
+              <Typography variant="h6" gutterBottom>Filters</Typography>
+              <Divider style={{marginBottom: '12px'}}/>
               <FormControl fullWidth style={style}>
                 <InputLabel>Year(s)</InputLabel>
                 <Select multiple value={this.state.filterYears}
@@ -295,6 +326,34 @@ class DatasetDialog extends Component {
                     <MenuItem key={year} value={year}>
                       <Checkbox checked={this.state.filterYears.indexOf(year) > -1}/>
                       <ListItemText primary={year}/>
+                    </MenuItem>)}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth style={style}>
+                <InputLabel>Month(s)</InputLabel>
+                <Select multiple value={this.state.filterMonths}
+                        renderValue={() => {
+                          if (this.state.filterMonths.length === months.length) {
+                            return 'All months';
+                          } else {
+                            let months = [];
+                            for (let i = 0; i < months.length; i++) {
+                              let month = months[i];
+                              if (this.state.filterMonths.indexOf(month.key) > -1) {
+                                months.push(month.short);
+                              }
+                            }
+                            return months.join(', ');
+                          }
+                        }}
+                        onChange={e => this.setState({
+                          filterMonths: e.target.value.sort((a, b) =>
+                            months.indexOf(a) - months.indexOf(b)),
+                        })}>
+                  {months.map(month =>
+                    <MenuItem key={month.name} value={month.key}>
+                      <Checkbox checked={this.state.filterMonths.indexOf(month.key) > -1}/>
+                      <ListItemText primary={month.name}/>
                     </MenuItem>)}
                 </Select>
               </FormControl>
@@ -382,10 +441,12 @@ class App extends Component {
       let paras = new URLSearchParams();
       paras.append('city', cityName);
       paras.append('years', options.filterYears);
+      paras.append('months', options.filterMonths);
       paras.append('weekdays', options.filterWeekdays);
       fetch(BACKEND_HOST + '/sentiment?' + paras).then(res => res.json()).then(res => {
         dataset.data = res;
         dataset.loaded = true;
+        dataset.csvLink = BACKEND_HOST + '/sentiment.csv?' + paras;
         this.showSnackBar(`Dataset loaded: ${capitalize(cityName)} - ${dataset.name}`);
         this.setState({datasets: this.state.datasets});
       }).catch(e => {
@@ -546,37 +607,59 @@ class App extends Component {
                                   onChange={() => this.selectDataset(dataset)}>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                       {dataset.loaded || dataset.failed ?
-                        <Avatar style={{background: dataset.city.color, marginRight: '8px'}}>
-                          {dataset.city.name.charAt(0).toUpperCase()}
-                        </Avatar> :
+                        dataset.failed ?
+                          <Avatar style={{marginRight: '8px'}}>
+                            <CloseIcon/>
+                          </Avatar> :
+                          <Avatar style={{background: dataset.city.color, marginRight: '8px'}}>
+                            {dataset.city.name.charAt(0).toUpperCase()}
+                          </Avatar> :
                         <CircularProgress size={24} style={{margin: '8px 16px 8px 8px'}}/>}
                       <Typography variant="body2" style={{lineHeight: '40px'}}>{dataset.name}</Typography>
                     </ExpansionPanelSummary>
                     {dataset.loaded || dataset.failed ?
+                      dataset.failed ?
+                        <ExpansionPanelDetails>
+                          <Typography variant="body2">Load dataset Failed!</Typography>
+                        </ExpansionPanelDetails> :
+                        <ExpansionPanelDetails>
+                          <table>
+                            <tbody>
+                            <tr>
+                              <td><Typography variant="body2">City:</Typography></td>
+                              <td><Typography variant="body2">{capitalize(dataset.city.name)}</Typography></td>
+                            </tr>
+                            <tr>
+                              <td><Typography variant="body2">Dataset:</Typography></td>
+                              <td><Typography variant="body2">{capitalize(dataset.name)}</Typography></td>
+                            </tr>
+                            {dataset.infoTable.map(row =>
+                              <tr>
+                                <td><Typography variant="body2">{row.key}:</Typography></td>
+                                <td><Typography variant="body2">{row.value}</Typography></td>
+                              </tr>)}
+                            </tbody>
+                          </table>
+                        </ExpansionPanelDetails> :
                       <ExpansionPanelDetails>
-                        <table>
-                          <tbody>
-                          <tr>
-                            <td><Typography variant="body2">City:</Typography></td>
-                            <td><Typography variant="body2">{capitalize(dataset.city.name)}</Typography></td>
-                          </tr>
-                          <tr>
-                            <td><Typography variant="body2">Dataset:</Typography></td>
-                            <td><Typography variant="body2">{capitalize(dataset.name)}</Typography></td>
-                          </tr>
-                          </tbody>
-                        </table>
-                      </ExpansionPanelDetails> :
-                      <ExpansionPanelDetails>
-                        <Typography variant="body1">Loading the dataset...</Typography>
+                        <Typography variant="body1">The dataset is still loading...</Typography>
                       </ExpansionPanelDetails>}
                     {dataset.loaded || dataset.failed ?
-                      <ExpansionPanelActions>
-                        <Button size="small" color="secondary"
-                                onClick={() => this.deleteDataset(dataset)}>delete</Button>
-                        <Button size="small" color="primary"
-                                onClick={() => this.displayDataset(dataset)}>display</Button>
-                      </ExpansionPanelActions> : ''}
+                      dataset.failed ?
+                        <ExpansionPanelActions>
+                          <Button size="small" color="secondary" title="Remove this dataset"
+                                  onClick={() => this.deleteDataset(dataset)}>remove</Button>
+                        </ExpansionPanelActions> :
+                        <ExpansionPanelActions>
+                          {dataset.csvLink ?
+                            <Button size="small" color="default" title="Download as CSV file"
+                                    href={dataset.csvLink} target="_blank">
+                              csv</Button> : ''}
+                          <Button size="small" color="secondary" title="Remove this dataset"
+                                  onClick={() => this.deleteDataset(dataset)}>remove</Button>
+                          <Button size="small" color="primary" title="Display this dataset on map"
+                                  onClick={() => this.displayDataset(dataset)}>display</Button>
+                        </ExpansionPanelActions> : ''}
                   </ExpansionPanel>)
                 : ''}
             </CardContent>

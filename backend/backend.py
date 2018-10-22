@@ -5,10 +5,12 @@ from flask import Flask
 from flask import Response
 from flask import redirect
 from flask import request
+from flask import make_response
 from flask_compress import Compress
 from flask_cors import CORS
 
 from sentiment import get_sentiment
+from sentiment import get_sentiment_csv
 
 app = Flask(__name__, static_url_path='', static_folder='build')
 Compress(app)
@@ -23,6 +25,12 @@ def as_json(data):
     return Response(json.dumps(data), mimetype='application/json')
 
 
+def as_csv(content, filename):
+    response = make_response(content)
+    response.headers["Content-Disposition"] = "attachment; filename=%s" % filename
+    return response
+
+
 @app.route("/")
 def index():
     return redirect('index.html')
@@ -32,8 +40,18 @@ def index():
 def sentiment():
     city = get_arg('city', 'melbourne').lower()
     years = list(map(int, get_arg('years', '2014,2015,2016,2017,2018').split(',')))
+    months = list(map(int, get_arg('months', '1,2,3,4,5,6,7,8,9,10,11,12').split(',')))
     weekdays = list(map(int, get_arg('weekdays', '0,1,2,3,4,5,6').split(',')))
-    return as_json(get_sentiment(city, years, weekdays))
+    return as_json(get_sentiment(city, years, months, weekdays))
+
+
+@app.route('/sentiment.csv')
+def sentiment_csv():
+    city = get_arg('city', 'melbourne').lower()
+    years = list(map(int, get_arg('years', '2014,2015,2016,2017,2018').split(',')))
+    months = list(map(int, get_arg('months', '1,2,3,4,5,6,7,8,9,10,11,12').split(',')))
+    weekdays = list(map(int, get_arg('weekdays', '0,1,2,3,4,5,6').split(',')))
+    return as_csv(get_sentiment_csv(city, years, months, weekdays), 'sentiment.csv')
 
 
 if __name__ == '__main__':
