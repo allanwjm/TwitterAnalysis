@@ -8,9 +8,11 @@ from flask import request
 from flask import make_response
 from flask_compress import Compress
 from flask_cors import CORS
+from flask import redirect, url_for
 
 from sentiment import get_sentiment
 from sentiment import get_sentiment_csv
+from ldaSimple import get_topic
 
 app = Flask(__name__, static_url_path='', static_folder='build')
 Compress(app)
@@ -52,6 +54,23 @@ def sentiment_csv():
     months = list(map(int, get_arg('months', '1,2,3,4,5,6,7,8,9,10,11,12').split(',')))
     weekdays = list(map(int, get_arg('weekdays', '0,1,2,3,4,5,6').split(',')))
     return as_csv(get_sentiment_csv(city, years, months, weekdays), 'sentiment.csv')
+
+
+@app.route('/topic', methods = ['POST', 'GET'])
+def topic():
+    if request.method == 'POST':
+        weekday = request.form['weekday']
+        startDate = request.form['startDate']
+        startTime = request.form['startTime']
+        endDate = request.form['endDate']
+        endTime = request.form['endTime']
+        suburb = request.form['suburb']
+        city = request.form['city']
+        topics = request.form['topics']
+        keywords = request.form['keywords']
+        return as_json(get_topic(weekday, startDate, startTime, endDate, endTime, suburb, city, topics, keywords))
+    else:
+        pass
 
 
 if __name__ == '__main__':

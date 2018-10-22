@@ -5,11 +5,11 @@ from sklearn.decomposition import LatentDirichletAllocation
 import pyLDAvis
 import pyLDAvis.sklearn
 # f = open('Arncliffe-sydney-3-2016.txt', 'r')
-def runTest(*args):
-    print(args)
+def get_topic(*args):
+    # print(args)
     conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='toor', db='twitter', charset='utf8')
     cursor = conn.cursor()
-    cursor.execute("set names utf8");
+    cursor.execute("set names utf8")
 
     try:
         n_features = 1000
@@ -24,18 +24,18 @@ def runTest(*args):
         result = cursor.fetchall()
         text = []
         for item in result:
-        	text.append(item[0])
+            text.append(item[0])
         try:
-        	cursor.execute(sql)
-        	conn.commit()
+            cursor.execute(sql)
+            conn.commit()
         except:
-        	conn.rollback()
+            conn.rollback()
 
         tf = tf_vectorizer.fit_transform(text)
         # tf = tf_vectorizer.fit_transform([f.read()])
 
         n_topics = int(args[7])
-        print(n_topics)
+        # print(n_topics)
         lda = LatentDirichletAllocation(n_topics=n_topics, max_iter=50,
                                         learning_method='online',
                                         learning_offset=50.,
@@ -51,7 +51,7 @@ def runTest(*args):
                 temp[key] = value
             return temp
         n_top_words = int(args[8])
-        print(n_top_words)
+        # print(n_top_words)
         tf_feature_names = tf_vectorizer.get_feature_names()
 #        data = pyLDAvis.sklearn.prepare(lda, tf, tf_vectorizer)
 #        pyLDAvis.show(data)
