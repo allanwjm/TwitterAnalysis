@@ -2,41 +2,42 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import Checkbox from '@material-ui/core/Checkbox';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import blue from '@material-ui/core/colors/blue';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import Checkbox from '@material-ui/core/Checkbox';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Divider from '@material-ui/core/Divider';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import Snackbar from '@material-ui/core/Snackbar';
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {default as AddCircleOutlineIcon} from '@material-ui/icons/AddCircleOutline';
 import {default as ChevronLeftIcon} from '@material-ui/icons/ChevronLeft';
 import {default as ChevronRightIcon} from '@material-ui/icons/ChevronRight';
-import {default as DeleteIcon} from '@material-ui/icons/Delete';
 import {default as CloseIcon} from '@material-ui/icons/Close';
-import {default as MenuIcon} from '@material-ui/icons/Menu';
-import {default as RemoveIcon} from '@material-ui/icons/Remove';
+import {default as ExpandMoreIcon} from '@material-ui/icons/ExpandMore';
 import {default as InfoIcon} from '@material-ui/icons/Info';
 import {default as InfoOutlinedIcon} from '@material-ui/icons/InfoOutlined';
+import {default as MenuIcon} from '@material-ui/icons/Menu';
+import {default as RemoveIcon} from '@material-ui/icons/Remove';
+import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {GoogleMap, Polygon, withGoogleMap, withScriptjs} from 'react-google-maps';
 import {compose, withProps} from 'recompose';
-import Snackbar from '@material-ui/core/Snackbar';
-import PropTypes from 'prop-types';
 import 'typeface-roboto';
 import './style.css';
 
@@ -53,14 +54,14 @@ const theme = createMuiTheme({
 
 function debounce(fn, delay = 1000) {
   let timer = null;
-  return function () {
+  return function() {
     let context = this;
     let args = arguments;
     clearTimeout(timer);
-    timer = setTimeout(function () {
+    timer = setTimeout(function() {
       fn.apply(context, args);
     }, delay);
-  }
+  };
 }
 
 function capitalize(s) {
@@ -72,6 +73,22 @@ function City(name, lng, lat, color) {
   this.lng = lng;
   this.lat = lat;
   this.color = color;
+}
+
+function scaleRatio(value, n) {
+  let offset = (1 - (1.0 / n)) / 2;
+  value = value - offset;
+  value = value * n;
+  if (value < 0) {
+    value = 0;
+  } else if (value > 1) {
+    value = 1;
+  }
+  return value;
+}
+
+function redGreedColor(value) {
+  return `hsl(${Math.round((value) * 120)},80%,50%)`;
 }
 
 const years = [2014, 2015, 2016, 2017, 2018];
@@ -124,7 +141,7 @@ class MapComponent extends Component {
       left: null,
       right: null,
     };
-    this.map = React.createRef()
+    this.map = React.createRef();
   }
 
   boundsChanged = () => {
@@ -135,7 +152,7 @@ class MapComponent extends Component {
       bottom: bounds.f.b - bleed,
       left: bounds.b.b - bleed,
       right: bounds.b.f + bleed,
-    })
+    });
   };
 
   handleHover = area => {
@@ -160,19 +177,26 @@ class MapComponent extends Component {
             if (area.count > 0) {
               let score = area.score;
               let ratio = (score - scoreMin) / (scoreMax - scoreMin);
-              color = `hsl(${Math.round((ratio) * 120)},80%,50%)`;
+              ratio = scaleRatio(ratio, 2);
+              color = redGreedColor(ratio);
             }
+            let polygonOptions = {
+              strokeWeight: 1, strokeOpacity: 0.6, strokeColor: color,
+              fillOpacity: 0.4, fillColor: color,
+            };
             return area.polygons.map((polygon, i) =>
               <Polygon key={`${area.sa2Code}-${i}`} paths={polygon}
-                       onMouseOver={() => this.handleHover(area)}
-                       options={{
-                         strokeWeight: 1, strokeOpacity: 0.6, strokeColor: color,
-                         fillOpacity: 0.4, fillColor: color
-                       }}/>);
+                       onMouseOver={() => this.handleHover(area)} options={polygonOptions}/>);
           } else {
             return '';
           }
         });
+      }
+      else if (dataset.display === 'topic') {
+        let dataset = this.props.dataset;
+        // TODO: TOPIC
+        // 将要显示的东西放到content变量中
+        // https://tomchentw.github.io/react-google-maps/#ui-components
       }
     }
     return (
@@ -196,7 +220,7 @@ const Map = compose(
     loadingElement: <div className="wh-100"/>,
     containerElement: <div className="wh-100"/>,
     mapElement: <div className="wh-100"/>,
-  }), withScriptjs, withGoogleMap
+  }), withScriptjs, withGoogleMap,
 )(MapComponent);
 
 class DatasetDialog extends Component {
@@ -206,7 +230,7 @@ class DatasetDialog extends Component {
       cityName: cityName,
       filterYears: [].concat(years),
       filterWeekdays: weekdays.map(day => day.key),
-    }
+    };
   };
 
   constructor(props) {
@@ -225,7 +249,7 @@ class DatasetDialog extends Component {
       filterYears: this.state.filterYears,
       filterWeekdays: this.state.filterWeekdays,
     });
-    this.props.onClose()
+    this.props.onClose();
   };
 
   render() {
@@ -238,7 +262,7 @@ class DatasetDialog extends Component {
         <DialogTitle>Open Dataset</DialogTitle>
         <DialogContent>
           <Grid container spacing={24}>
-            <Grid item md={6} style={{borderRight: '1px rgba(0, 0, 0, 0.12) solid'}}>
+            <Grid item md={6}>
               <FormControl fullWidth style={style}>
                 <InputLabel>Dataset type</InputLabel>
                 <Select value={this.state.datasetType} onChange={e => this.setState({datasetType: e.target.value})}>
@@ -255,7 +279,7 @@ class DatasetDialog extends Component {
                 <Select value={this.state.cityName} renderValue={() => capitalize(this.state.cityName)}
                         onChange={e => this.setState({cityName: e.target.value})}>
                   {cities.map(city =>
-                    <MenuItem key={city.name} value={city.name}>{capitalize(city.name)}</MenuItem>
+                    <MenuItem key={city.name} value={city.name}>{capitalize(city.name)}</MenuItem>,
                   )}
                 </Select>
               </FormControl>
@@ -293,7 +317,7 @@ class DatasetDialog extends Component {
                         }}
                         onChange={e => this.setState({
                           filterWeekdays: e.target.value.sort((a, b) =>
-                            weekdays.indexOf(a) - weekdays.indexOf(b))
+                            weekdays.indexOf(a) - weekdays.indexOf(b)),
                         })}>
                   {weekdays.map(day =>
                     <MenuItem key={day.name} value={day.key}>
@@ -333,7 +357,8 @@ class App extends Component {
       snackOpen: false,
       snackMessage: '',
       datasets: [],
-      dataset: null,
+      datasetSelected: null,
+      datasetDisplayed: null,
       infoOpen: true,
       infoTitle: '',
       infoTable: [],
@@ -342,7 +367,7 @@ class App extends Component {
   }
 
   selectCity = city => {
-    this.setState({city: city, dataset: null});
+    this.setState({city: city, datasetDisplayed: null});
     // Do other staff...
   };
 
@@ -358,29 +383,55 @@ class App extends Component {
       paras.append('city', cityName);
       paras.append('years', options.filterYears);
       paras.append('weekdays', options.filterWeekdays);
-      fetch(BACKEND_HOST + '/sentiment?' + paras)
-        .then(res => res.json())
-        .then(res => {
-          dataset.data = res;
-          dataset.loaded = true;
-          this.showSnackBar(`Dataset loaded: ${capitalize(cityName)} - ${dataset.name}`);
-          this.setState({datasets: this.state.datasets});
-        }).catch(e => {
+      fetch(BACKEND_HOST + '/sentiment?' + paras).then(res => res.json()).then(res => {
+        dataset.data = res;
+        dataset.loaded = true;
+        this.showSnackBar(`Dataset loaded: ${capitalize(cityName)} - ${dataset.name}`);
+        this.setState({datasets: this.state.datasets});
+      }).catch(e => {
         dataset.failed = true;
         this.showSnackBar(`${e.message}: ${capitalize(cityName)} - ${dataset.name}`);
         this.setState({datasets: this.state.datasets});
       });
+    } else if (options.datasetType === 'topic') {
+      let dataset = new Dataset(city, 'Topic modeling', 'topic');
+      this.state.datasets.push(dataset);
+      this.setState({datasets: this.state.datasets});
+      let paras = new URLSearchParams();
+      // TODO: TOPIC
+      // 设置请求参数 paras.append('key', value)
+      fetch(BACKEND_HOST + '/路径?' + paras).then(res => res.json()).then(res => {
+        // res 就是返回回来的JSON对象
+        // 在fetch中将需要的数据保存至dataset.data，在Map中读取
+        dataset.data = res;
+        dataset.loaded = true;
+        this.showSnackBar(`Dataset loaded: ${capitalize(cityName)} - ${dataset.name}`);
+        this.setState({datasets: this.state.datasets});
+      }).catch(e => {
+        dataset.failed = true;
+        this.showSnackBar(`${e.message}: ${capitalize(cityName)} - ${dataset.name}`);
+        this.setState({datasets: this.state.datasets});
+      });
+
     }
   };
 
-  switchDataset = dataset => {
+  selectDataset = dataset => {
+    if (this.state.datasetSelected !== dataset) {
+      this.setState({datasetSelected: dataset});
+    } else {
+      this.setState({datasetSelected: false});
+    }
+  };
+
+  displayDataset = dataset => {
     if (dataset === null) {
-      this.setState({dataset: dataset});
+      this.setState({datasetDisplayed: dataset});
     } else if (dataset.loaded) {
       if (this.state.city !== dataset.city) {
         this.selectCity(dataset.city);
       }
-      this.setState({dataset: dataset, panelOpen: false});
+      this.setState({datasetDisplayed: dataset, panelOpen: false});
       this.showSnackBar(`Switched to: ${capitalize(dataset.city.name)} - ${dataset.name}`);
     } else if (dataset.failed) {
       this.showSnackBar('Failed to load dataset!');
@@ -391,28 +442,28 @@ class App extends Component {
 
   deleteDataset = dataset => {
     this.setState({datasets: this.state.datasets.filter(item => item !== dataset)});
-    if (dataset === this.state.dataset) {
-      this.setState({dataset: null});
+    if (dataset === this.state.datasetDisplayed) {
+      this.setState({datasetDisplayed: null});
     }
   };
 
   openDialog = () => {
     this.dialog.current.resetState(this.state.city.name);
-    this.setState({dialogOpen: true})
+    this.setState({dialogOpen: true});
   };
 
   showSnackBar = message => {
     this.setState({
       snackOpen: true,
       snackMessage: message,
-    })
+    });
   };
 
   updateInfo = (title, table) => {
     this.setState({
       infoTitle: title,
       infoTable: table,
-    })
+    });
   };
 
   render() {
@@ -421,7 +472,7 @@ class App extends Component {
         <div className="wh-100">
           <CssBaseline/>
           <Map city={this.state.city} key={this.state.city.name}
-               dataset={this.state.dataset} updateInfo={this.updateInfo}/>
+               dataset={this.state.datasetDisplayed} updateInfo={this.updateInfo}/>
           <Button id="panel-trigger" variant="contained" title="Show / hide dataset panel"
                   onClick={() => this.setState({panelOpen: !this.state.panelOpen})}>
             <MenuIcon/></Button>
@@ -465,7 +516,7 @@ class App extends Component {
               let color = this.state.cityOpen && active ? 'primary' : 'default';
               let variant = this.state.cityOpen && active ? 'contained' : 'text';
               return <Button key={city.name} style={{display: display}} color={color} variant={variant}
-                             onClick={() => this.selectCity(city)}>{city.name}</Button>
+                             onClick={() => this.selectCity(city)}>{city.name}</Button>;
             })}
             <Button disableRipple className="trigger" style={{background: 'white'}}
                     title="Show / hide city list"
@@ -478,7 +529,7 @@ class App extends Component {
               <Grid container>
                 <Grid item xs>
                   <Typography gutterBottom variant="h5">
-                    Datasets
+                    Dataset List
                   </Typography>
                 </Grid>
                 <Grid item xs={false}>
@@ -489,30 +540,45 @@ class App extends Component {
               </Grid>
               <Divider/>
               {this.state.datasets.length > 0 ?
-                <List>
-                  {this.state.datasets.map(dataset =>
-                    <ListItem button key={dataset.timestamp.getTime()}
-                              selected={this.state.dataset === dataset}
-                              onClick={() => this.switchDataset(dataset)}
-                              style={{paddingLeft: '16px'}}>
-                      <Avatar style={{background: dataset.city.color}}>
-                        {dataset.city.name.charAt(0).toUpperCase()}
-                      </Avatar>
-                      <ListItemText primary={dataset.name} secondary={
-                        dataset.failed ? 'Error!' :
-                          !dataset.loaded ? 'Loading...' :
-                            dataset === this.state.dataset ? 'Active' : null
-                      }/>
+                this.state.datasets.map(dataset =>
+                  <ExpansionPanel key={dataset.timestamp.getTime()}
+                                  expanded={this.state.datasetSelected === dataset}
+                                  onChange={() => this.selectDataset(dataset)}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                       {dataset.loaded || dataset.failed ?
-                        <ListItemSecondaryAction>
-                          <IconButton title="Remove this dataset"
-                                      onClick={() => this.deleteDataset(dataset)}>
-                            {dataset.failed ? <CloseIcon/> : <DeleteIcon/>}
-                          </IconButton>
-                        </ListItemSecondaryAction> :
-                        <CircularProgress size={25}/>}
-                    </ListItem>)}
-                </List> : ''}
+                        <Avatar style={{background: dataset.city.color, marginRight: '8px'}}>
+                          {dataset.city.name.charAt(0).toUpperCase()}
+                        </Avatar> :
+                        <CircularProgress size={24} style={{margin: '8px 16px 8px 8px'}}/>}
+                      <Typography variant="body2" style={{lineHeight: '40px'}}>{dataset.name}</Typography>
+                    </ExpansionPanelSummary>
+                    {dataset.loaded || dataset.failed ?
+                      <ExpansionPanelDetails>
+                        <table>
+                          <tbody>
+                          <tr>
+                            <td><Typography variant="body2">City:</Typography></td>
+                            <td><Typography variant="body2">{capitalize(dataset.city.name)}</Typography></td>
+                          </tr>
+                          <tr>
+                            <td><Typography variant="body2">Dataset:</Typography></td>
+                            <td><Typography variant="body2">{capitalize(dataset.name)}</Typography></td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </ExpansionPanelDetails> :
+                      <ExpansionPanelDetails>
+                        <Typography variant="body1">Loading the dataset...</Typography>
+                      </ExpansionPanelDetails>}
+                    {dataset.loaded || dataset.failed ?
+                      <ExpansionPanelActions>
+                        <Button size="small" color="secondary"
+                                onClick={() => this.deleteDataset(dataset)}>delete</Button>
+                        <Button size="small" color="primary"
+                                onClick={() => this.displayDataset(dataset)}>display</Button>
+                      </ExpansionPanelActions> : ''}
+                  </ExpansionPanel>)
+                : ''}
             </CardContent>
           </Card>
         </div>
