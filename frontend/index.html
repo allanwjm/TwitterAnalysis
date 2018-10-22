@@ -40,20 +40,21 @@
         cursor: move;
         border: black 0.5px solid;
     }
-</style>
-<link rel="stylesheet" href="jquery-ui.css">
-<link rel="stylesheet" href="jquery-ui.min.css">
-<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 
-<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
-<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
-<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="http://malsup.github.com/jquery.form.js"></script> 
-<!--         <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script> -->
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script type="text/babel">
+    </style>
+    <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="stylesheet" href="jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <!--         <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script> -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script type="text/babel">
     function tick() {
     const element = (
     <div>
@@ -67,9 +68,10 @@
 }
 
 setInterval(tick, 1000);
-</script>
 
-<script>
+    </script>
+
+    <script>
 
   $(function() {
     $("#datepicker").datepicker();
@@ -279,36 +281,37 @@ $(function() {
 });         
 });
 
-</script>
+
+    </script>
 
 
 </head>
 
 <body>
-    <!-- <iframe id="mytest" name="mytest"></iframe> -->
-    <!-- <div id="draggable"></div> -->
-    <div id="map"></div>
-    <div id="flip"><i class="fa fa-spinner fa-spin"></i>click me!</div>
-    <div id="panel">
-        <form id = "test3" action = "http://c25c43ab.ngrok.io/login" method = "post" target="mytest">
-            <p><input type = "text" name = "name" value=""/></p>
-            <p id = "display"></p>
-            <p><input id = "weekday" type = "range" min = "-1" max = "6" oninput="change()" name = "weekday" value="-1"/></p>
-            <p><input type = "text" id="datepicker" name = "startDate" value="2014-01-01"/></p>
-            <p>Date Format：<br>
-              <select id="format">
+<!-- <iframe id="mytest" name="mytest"></iframe> -->
+<!-- <div id="draggable"></div> -->
+<div id="map"></div>
+<div id="flip"><i class="fa fa-spinner fa-spin"></i>click me!</div>
+<div id="panel">
+    <form id="test3" action="http://c25c43ab.ngrok.io/login" method="post" target="mytest">
+        <p><input type="text" name="name" value=""/></p>
+        <p id="display"></p>
+        <p><input id="weekday" type="range" min="-1" max="6" oninput="change()" name="weekday" value="-1"/></p>
+        <p><input type="text" id="datepicker" name="startDate" value="2014-01-01"/></p>
+        <p>Date Format：<br>
+            <select id="format">
                 <option value="mm/dd/yy">Default - mm/dd/yy</option>
                 <option value="yy-mm-dd">ISO 8601 - yy-mm-dd</option>
             </select>
         </p>
-        <p><input type = "text" name = "startTime" value="00:00:00"/></p>
-        <p><input type = "text" name = "endDate" value="2014-12-31"/></p>
-        <p><input type = "text" name = "endTime" value="23:59:59"/></p>
-        <p><input id = "test4" type = "text" name = "suburb" value="402041047"/></p>
-        <p><input type = "text" name = "city" value="adelaide"/></p>
-        <p><input type = "text" name = "topics" value="5"/></p>
-        <p><input type = "text" name = "keywords" value="5"/></p>
-        <p><input id = "btn" type = "submit" value = "submit" /></p>
+        <p><input type="text" name="startTime" value="00:00:00"/></p>
+        <p><input type="text" name="endDate" value="2014-12-31"/></p>
+        <p><input type="text" name="endTime" value="23:59:59"/></p>
+        <p><input id="test4" type="text" name="suburb" value="402041047"/></p>
+        <p><input type="text" name="city" value="adelaide"/></p>
+        <p><input type="text" name="topics" value="5"/></p>
+        <p><input type="text" name="keywords" value="5"/></p>
+        <p><input id="btn" type="submit" value="submit"/></p>
     </form>
     <div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>
 </div>
@@ -316,22 +319,25 @@ $(function() {
     <div id="example"></div>
     <!-- <div id="show"></div> -->
     <div id="states">
-        <button  class="states" name="states" onclick = "set_map('states');">
-        States</button>
+        <button class="states" name="states" onclick="set_map('states');">
+            States
+        </button>
     </div>
 
     <div id="melbSA1">
-        <button  class="melbSA1" name="melbSA1" onclick = "set_map('melbSA1');">
-        Melbourne SA1</button>
+        <button class="melbSA1" name="melbSA1" onclick="set_map('melbSA1');">
+            Melbourne SA1
+        </button>
     </div>
 
     <div id="melbSA2">
-        <button  class="melbSA2" name="melbSA2" onclick = "set_map('melbSA2');">
-        Melbourne SA2</button>
-    </div> 
+        <button class="melbSA2" name="melbSA2" onclick="set_map('melbSA2');">
+            Melbourne SA2
+        </button>
+    </div>
 
     <div id="test1">
-        <textarea id = "test" rows="3" cols="20">test</textarea>
+        <textarea id="test" rows="3" cols="20">test</textarea>
     </div>
 </div>
 <script>
@@ -479,10 +485,11 @@ $.getJSON(mapString, function(data){
 }) 
 }
 
+
 </script>
 
 <script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrpOiQ0B5LJZTTDJ6j_mKFApFwLqNcZqQ&libraries=visualization&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrpOiQ0B5LJZTTDJ6j_mKFApFwLqNcZqQ&libraries=visualization&callback=initMap">
 </script>
 </body>
 </html>
