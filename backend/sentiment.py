@@ -87,6 +87,7 @@ def get_sentiment(city, years, months, weekdays):
 
 def get_sentiment_csv(city, years, months, weekdays):
     city_letter = city[0].lower()
+    shapes = sa2_shapes(city)
     conn = mysql_connect()
     c = conn.cursor()
     sql = """
@@ -115,12 +116,13 @@ def get_sentiment_csv(city, years, months, weekdays):
     conn.close()
 
     buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, ['sa2_name16', 'count', 'pos', 'neu', 'neg', 'compound'])
+    writer = csv.DictWriter(buffer, ['sa2_code', 'sa2_name', 'count', 'pos', 'neu', 'neg', 'compound'])
     writer.writeheader()
 
     for sa2, count, pos, neu, neg, comp in result:
         writer.writerow({
-            'sa2_name16': sa2,
+            'sa2_code': sa2,
+            'sa2_name': shapes[sa2]['sa2_name'],
             'count': count,
             'pos': pos,
             'neu': neu,
