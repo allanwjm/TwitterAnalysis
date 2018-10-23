@@ -1,0 +1,37 @@
+Starts at: 2018-08-19 19:26:41
+Main process PID: 6543
+MySQL worker PID: 6551
+---------- ---------- ---------- 
+Processing: data/sydney-2014.json
+Line count: 741883
+With coordinates: 741881 (100.000%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.000%)
+---------- ---------- ---------- 
+Processing: data/sydney-2015.json
+Line count: 562706
+With coordinates: 562704 (100.000%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.000%)
+---------- ---------- ---------- 
+Processing: data/sydney-2016.json
+Line count: 213219
+With coordinates: 213217 (99.999%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.001%)
+---------- ---------- ---------- 
+Processing: data/sydney-2017.json
+Line count: 25916932
+With coordinates: 170521 (0.658%)
+With neighbours: 45376 (0.175%)
+Discarded: 25701035 (99.167%)
+---------- ---------- ---------- 
+Processing: data/sydney-2018.json
+Line count: 12888694
+With coordinates: 65707 (0.510%)
+With neighbours: 14990 (0.116%)
+Discarded: 12807997 (99.374%)
+---------- ---------- ---------- 
+Wait MySQL process exit...
+Ends at: 2018-08-19 22:02:08
+Total: 9326.803 seconds

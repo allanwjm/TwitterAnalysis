@@ -1,0 +1,37 @@
+Starts at: 2018-08-19 19:26:41
+Main process PID: 6545
+MySQL worker PID: 6561
+---------- ---------- ---------- 
+Processing: data/brisbane-2014.json
+Line count: 152728
+With coordinates: 152726 (99.999%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.001%)
+---------- ---------- ---------- 
+Processing: data/brisbane-2015.json
+Line count: 128663
+With coordinates: 128661 (99.998%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.002%)
+---------- ---------- ---------- 
+Processing: data/brisbane-2016.json
+Line count: 127054
+With coordinates: 127052 (99.998%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.002%)
+---------- ---------- ---------- 
+Processing: data/brisbane-2017.json
+Line count: 7179414
+With coordinates: 48641 (0.678%)
+With neighbours: 14744 (0.205%)
+Discarded: 7116029 (99.117%)
+---------- ---------- ---------- 
+Processing: data/brisbane-2018.json
+Line count: 9291938
+With coordinates: 45087 (0.485%)
+With neighbours: 14605 (0.157%)
+Discarded: 9232246 (99.358%)
+---------- ---------- ---------- 
+Wait MySQL process exit...
+Ends at: 2018-08-19 20:35:48
+Total: 4146.646 seconds

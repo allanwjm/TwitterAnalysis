@@ -1,0 +1,37 @@
+Starts at: 2018-08-19 19:26:41
+Main process PID: 6546
+MySQL worker PID: 6554
+---------- ---------- ---------- 
+Processing: data/adelaide-2014.json
+Line count: 167108
+With coordinates: 113428 (67.877%)
+With neighbours: 111 (0.066%)
+Discarded: 53569 (32.057%)
+---------- ---------- ---------- 
+Processing: data/adelaide-2015.json
+Line count: 89946
+With coordinates: 89944 (99.998%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.002%)
+---------- ---------- ---------- 
+Processing: data/adelaide-2016.json
+Line count: 14660
+With coordinates: 14658 (99.986%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.014%)
+---------- ---------- ---------- 
+Processing: data/adelaide-2017.json
+Line count: 4362039
+With coordinates: 32480 (0.745%)
+With neighbours: 5537 (0.127%)
+Discarded: 4324022 (99.128%)
+---------- ---------- ---------- 
+Processing: data/adelaide-2018.json
+Line count: 4821563
+With coordinates: 28064 (0.582%)
+With neighbours: 6247 (0.130%)
+Discarded: 4787252 (99.288%)
+---------- ---------- ---------- 
+Wait MySQL process exit...
+Ends at: 2018-08-19 20:08:28
+Total: 2506.463 seconds

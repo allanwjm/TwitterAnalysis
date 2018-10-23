@@ -1,0 +1,37 @@
+Starts at: 2018-08-19 19:26:41
+Main process PID: 6547
+MySQL worker PID: 6549
+---------- ---------- ---------- 
+Processing: data/canberra-2014.json
+Line count: 45346
+With coordinates: 45344 (99.996%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.004%)
+---------- ---------- ---------- 
+Processing: data/canberra-2015.json
+Line count: 38093
+With coordinates: 38091 (99.995%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.005%)
+---------- ---------- ---------- 
+Processing: data/canberra-2016.json
+Line count: 25252
+With coordinates: 25250 (99.992%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.008%)
+---------- ---------- ---------- 
+Processing: data/canberra-2017.json
+Line count: 2562810
+With coordinates: 17953 (0.701%)
+With neighbours: 4756 (0.186%)
+Discarded: 2540101 (99.114%)
+---------- ---------- ---------- 
+Processing: data/canberra-2018.json
+Line count: 1731187
+With coordinates: 12418 (0.717%)
+With neighbours: 2970 (0.172%)
+Discarded: 1715799 (99.111%)
+---------- ---------- ---------- 
+Wait MySQL process exit...
+Ends at: 2018-08-19 19:49:00
+Total: 1338.605 seconds

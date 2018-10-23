@@ -89,7 +89,9 @@ function scaleRatio(value, n) {
 }
 
 function redGreedColor(value) {
-  return `hsl(${Math.round((value) * 120)},80%,50%)`;
+  let h = Math.round((value) * 120);
+  let a = Math.abs(value - 0.5) * 0.75 + 0.25;
+  return `hsla(${h},80%,50%,${a})`;
 }
 
 const years = [2014, 2015, 2016, 2017, 2018];
@@ -161,19 +163,22 @@ class MapComponent extends Component {
   boundsChanged = () => {
     const bleed = 0.025;
     let bounds = this.map.current.getBounds();
+    let ne = bounds.getNorthEast();
+    let sw = bounds.getSouthWest();
+    console.log(ne, sw);
     this.setState({
-      top: bounds.f.f + bleed,
-      bottom: bounds.f.b - bleed,
-      left: bounds.b.b - bleed,
-      right: bounds.b.f + bleed,
+      top: ne.lat() + bleed,
+      bottom: sw.lat() - bleed,
+      left: sw.lng() - bleed,
+      right: ne.lng() + bleed,
     });
   };
 
   polygonMouseOver = area => {
     this.props.updateInfo(area.sa2Name, [
       {key: 'Twitter count', value: area.count},
-      {key: 'Sentiment score', value: Number(area.score).toFixed(3)},
-      {key: 'Step', value: area.step},
+      {key: 'Avg sentiment score', value: Number(area.score).toFixed(3)},
+      // {key: 'Step', value: area.step},
     ]);
   };
 
@@ -182,26 +187,26 @@ class MapComponent extends Component {
     if (this.props.dataset) {
       let dataset = this.props.dataset;
       if (dataset.display === 'polygons') {
-        let scoreMax = dataset.data.scoreMax;
-        let scoreMin = dataset.data.scoreMin;
-        let scoreAvg = dataset.data.scoreAvg;
         content = dataset.data.areas.map(area => {
           if (this.state.top == null || (
             // Check if this area is inside the screen
             this.state.left < area.right && area.left < this.state.right &&
             this.state.bottom < area.top && area.bottom < this.state.top)) {
-            let color = `#666666`;
+            let color = `#66666680`;
             if (area.count > 10) {
-              // let score = area.score;
+              let score = (area.score + .9) / 2;
+              score = scaleRatio(score, 6);
+              color = redGreedColor(score);
+
               // let ratio = score > scoreAvg ?
               //   ((score - scoreAvg) / (scoreMax - scoreAvg)) / 2 + 0.5 :
               //   ((scoreAvg - score) / (scoreAvg - scoreMin)) / 2;
               // color = redGreedColor(ratio);
-              color = redGreedColor(area.step / 10);
+              // color = redGreedColor(area.step / 10);
             }
             let polygonOptions = {
               strokeWeight: 1, strokeOpacity: 0.75, strokeColor: color,
-              fillOpacity: 0.4, fillColor: color,
+              fillOpacity: 0.5, fillColor: color,
             };
             return area.polygons.map((polygon, i) =>
               <Polygon key={`${area.sa2Code}-${i}`} paths={polygon}
@@ -231,7 +236,7 @@ class MapComponent extends Component {
                    mapTypeControl: false,
                    streetViewControl: false,
                  }}>
-        {content}
+        {content}{console.log(content)}
       </GoogleMap>
     );
   }
@@ -467,7 +472,7 @@ class App extends Component {
       let paras = new URLSearchParams();
       // TODO: TOPIC
       // 设置请求参数 paras.append('key', value)
-      fetch(BACKEND_HOST + '/路径?' + paras).then(res => res.json()).then(res => {
+      fetch(BACKEND_HOST + '/topic', {method: 'POST'}).then(res => res.json()).then(res => {
         // res 就是返回回来的JSON对象
         // 在fetch中将需要的数据保存至dataset.data，在Map中读取
         dataset.data = res;

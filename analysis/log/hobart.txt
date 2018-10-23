@@ -1,0 +1,37 @@
+Starts at: 2018-08-19 19:26:41
+Main process PID: 6548
+MySQL worker PID: 6559
+---------- ---------- ---------- 
+Processing: data/hobart-2014.json
+Line count: 3
+With coordinates: 0 (0.000%)
+With neighbours: 0 (0.000%)
+Discarded: 3 (100.000%)
+---------- ---------- ---------- 
+Processing: data/hobart-2015.json
+Line count: 3
+With coordinates: 0 (0.000%)
+With neighbours: 0 (0.000%)
+Discarded: 3 (100.000%)
+---------- ---------- ---------- 
+Processing: data/hobart-2016.json
+Line count: 3
+With coordinates: 0 (0.000%)
+With neighbours: 0 (0.000%)
+Discarded: 3 (100.000%)
+---------- ---------- ---------- 
+Processing: data/hobart-2017.json
+Line count: 912917
+With coordinates: 12105 (1.326%)
+With neighbours: 6820 (0.747%)
+Discarded: 893992 (97.927%)
+---------- ---------- ---------- 
+Processing: data/hobart-2018.json
+Line count: 1265995
+With coordinates: 10142 (0.801%)
+With neighbours: 6288 (0.497%)
+Discarded: 1249565 (98.702%)
+---------- ---------- ---------- 
+Wait MySQL process exit...
+Ends at: 2018-08-19 19:38:53
+Total: 731.791 seconds

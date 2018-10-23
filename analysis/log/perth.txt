@@ -1,0 +1,37 @@
+Starts at: 2018-08-19 19:26:41
+Main process PID: 6544
+MySQL worker PID: 6560
+---------- ---------- ---------- 
+Processing: data/perth-2014.json
+Line count: 171229
+With coordinates: 171227 (99.999%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.001%)
+---------- ---------- ---------- 
+Processing: data/perth-2015.json
+Line count: 129532
+With coordinates: 129530 (99.998%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.002%)
+---------- ---------- ---------- 
+Processing: data/perth-2016.json
+Line count: 8550
+With coordinates: 8548 (99.977%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.023%)
+---------- ---------- ---------- 
+Processing: data/perth-2017.json
+Line count: 6521954
+With coordinates: 41660 (0.639%)
+With neighbours: 15152 (0.232%)
+Discarded: 6465142 (99.129%)
+---------- ---------- ---------- 
+Processing: data/perth-2018.json
+Line count: 7380744
+With coordinates: 32641 (0.442%)
+With neighbours: 14118 (0.191%)
+Discarded: 7333985 (99.366%)
+---------- ---------- ---------- 
+Wait MySQL process exit...
+Ends at: 2018-08-19 20:26:01
+Total: 3559.441 seconds

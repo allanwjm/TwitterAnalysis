@@ -1,0 +1,37 @@
+Starts at: 2018-08-19 19:26:41
+Main process PID: 6542
+MySQL worker PID: 6555
+---------- ---------- ---------- 
+Processing: data/melbourne-2014.json
+Line count: 211757
+With coordinates: 211755 (99.999%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.001%)
+---------- ---------- ---------- 
+Processing: data/melbourne-2015.json
+Line count: 198260
+With coordinates: 198258 (99.999%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.001%)
+---------- ---------- ---------- 
+Processing: data/melbourne-2016.json
+Line count: 10803
+With coordinates: 10801 (99.981%)
+With neighbours: 0 (0.000%)
+Discarded: 2 (0.019%)
+---------- ---------- ---------- 
+Processing: data/melbourne-2017.json
+Line count: 21797265
+With coordinates: 131762 (0.604%)
+With neighbours: 33861 (0.155%)
+Discarded: 21631642 (99.240%)
+---------- ---------- ---------- 
+Processing: data/melbourne-2018.json
+Line count: 10679789
+With coordinates: 58714 (0.550%)
+With neighbours: 15915 (0.149%)
+Discarded: 10605160 (99.301%)
+---------- ---------- ---------- 
+Wait MySQL process exit...
+Ends at: 2018-08-19 21:30:38
+Total: 7436.844 seconds
